@@ -51,8 +51,8 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Sen-Arnab/envcraft"
-Repository = "https://github.com/Sen-Arnab/envcraft"
+Homepage = "https://github.com/ArnabbLank/EnvCraft"
+Repository = "https://github.com/ArnabbLank/EnvCraft"
 
 [project.scripts]
 envcraft = "envcraft.cli:main"

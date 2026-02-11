@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "envcraft"
+version = "0.1.0"
+description = "Enhanced environment configuration with better errors and multi-source loading"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Arnab Sen", email = "arnab.sen72@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+aws = [
+    "boto3>=1.26.0",
+]
+azure = [
+    "azure-keyvault-secrets>=4.7.0",
+    "azure-identity>=1.12.0",
+]
+vault = [
+    "hvac>=1.1.0",
+]
+all = [
+    "boto3>=1.26.0",
+    "azure-keyvault-secrets>=4.7.0",
+    "azure-identity>=1.12.0",
+    "hvac>=1.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Sen-Arnab/envcraft"
+Repository = "https://github.com/Sen-Arnab/envcraft"
+
+[project.scripts]
+envcraft = "envcraft.cli:main"
+
+[tool.setuptools]
+packages = ["envcraft"]
+
+[tool.setuptools.package-data]
+envcraft = ["py.typed"]

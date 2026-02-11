@@ -1,84 +1,75 @@
 # EnvCraft
 
-Enhanced environment configuration for Python with better error messages and multi-source loading.
+> **Enhanced environment configuration for Python** - Type-safe, multi-source .env loading with better error messages.
 
-> **The last config library you'll need** - From startup to enterprise in one package.
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Project Status
 
 ⚠️ **Early Development (v0.1.0)** - Use with caution in production
 
-| Component | Status | Test Coverage |
-|-----------|--------|---------------|
-| Core config loading | **Beta** | ✅ 3 tests |
-| Type validation | **Stable** | ✅ Powered by Pydantic |
-| Multi-file support | **Beta** | ✅ Tested |
-| Variable interpolation | **Beta** | ✅ 2 tests |
-| Caching & reload | **Beta** | ✅ 5 tests |
-| Secret wrapper | **Beta** | ✅ 10 tests |
-| Nested configs | **Beta** | ✅ 3 tests |
-| Strict mode | **Beta** | ✅ 2 tests |
-| CLI tools | **Alpha** | ⚠️ Manual testing only |
-| Secret backends (AWS/Azure/Vault) | **Experimental** | ⚠️ Code exists, not tested with real services |
-| Framework integrations | **Documentation only** | ⚠️ Examples provided, not tested |
+| Component | Status | Coverage |
+|-----------|--------|----------|
+| Core config loading | **Beta** | ✅ 26 tests |
+| Secret backends (AWS/Azure/Vault) | **Experimental** | ⚠️ Untested |
+| CLI tools | **Alpha** | ⚠️ Manual only |
 
-**Total: 26 automated tests**
+**Safe for:** Development, staging, basic .env loading  
+**Not ready for:** Mission-critical production
 
-**Production Readiness:**
-- ✅ Safe for basic .env loading with type validation
-- ✅ Good for development and staging environments
-- ⚠️ Test thoroughly before using secret backends in production
-- ⚠️ CLI tools work but need more edge case testing
-- ❌ Not recommended for mission-critical production use yet
-
-**Contributions welcome!** Help us reach 1.0 by adding tests, reporting issues, or improving documentation.
+[Full status details →](docs/FEATURES.md#status)
 
 ---
 
-## Features
+## Quick Start
 
-- 🔒 **Secret wrapper** - Prevents accidental logging of sensitive values
-- 📝 **Better error messages** - Clear, actionable validation errors with smart suggestions
-- 🔄 **Multi-file support** - Load from `.env`, `.env.{env}`, `.env.local`
-- 📋 **Auto-generate templates** - Automatically creates `.env.example` on first load
-- ✅ **Type validation** - Built on Pydantic for robust type checking
-- 🌍 **Variable interpolation** - Use `${VAR}` syntax in .env files
-- 📦 **Caching & reload** - Singleton pattern with thread-safe reload support
-
-## Installation
-
+**Install:**
 ```bash
 pip install envcraft
 ```
 
-**With secret backends:**
-```bash
-pip install envcraft[aws]    # AWS Secrets Manager
-pip install envcraft[azure]  # Azure Key Vault  
-pip install envcraft[vault]  # HashiCorp Vault
-pip install envcraft[all]    # All backends
-```
-
-## Quick Start
-
+**Use:**
 ```python
-from envcraft import EnvCraft, Secret
+from envcraft import EnvCraft
 from pydantic import Field
 
-class AppConfig(EnvCraft):
-    database_url: str = Field(..., description="PostgreSQL connection string")
-    api_key: Secret[str] = Field(..., description="External API key")
+class Config(EnvCraft):
+    database_url: str = Field(..., description="Database connection")
+    api_key: str
     debug: bool = False
-    max_workers: int = 4
 
-# Load configuration - automatically generates .env.example if missing
-config = AppConfig.load()
-
-# Access values
-print(config.debug)  # False
-print(config.api_key)  # Secret('***')
-print(config.api_key.get())  # Actual key value
+config = Config.load()
+print(config.database_url)
 ```
+
+**Create `.env`:**
+```bash
+DATABASE_URL=postgresql://localhost/mydb
+API_KEY=secret123
+DEBUG=true
+```
+
+That's it! EnvCraft handles type validation, multi-file loading, and auto-generates `.env.example`.
+
+---
+
+## Key Features
+
+- ✅ **Type validation** - Powered by Pydantic
+- 🔄 **Multi-file support** - `.env`, `.env.{env}`, `.env.local`
+- 📋 **Auto .env.example** - Generated automatically
+- 🌍 **Variable interpolation** - `${VAR}` syntax
+- 📝 **Smart errors** - Fuzzy matching suggestions
+- 🔒 **Secret masking** - Prevents accidental logging
+- 📦 **Caching & reload** - Thread-safe singleton pattern
+- 🎯 **Strict mode** - Prevent config drift
+- 🏗️ **Nested configs** - Organize complex settings
+- 🛠️ **CLI tools** - `envcraft check`, `generate`, `docs`
+
+[See all features →](docs/FEATURES.md)
+
+---
 
 ## Why EnvCraft?
 
@@ -88,372 +79,60 @@ print(config.api_key.get())  # Actual key value
 | Auto .env.example | ❌ | ❌ | ✅ |
 | Smart error suggestions | ❌ | ❌ | ✅ |
 | Variable interpolation | ❌ | ❌ | ✅ |
-| Secret backends (AWS/Azure/Vault) | ❌ | ❌ | ✅ |
-| Multi-file support | ⚠️ | ⚠️ | ✅ |
+| Secret backends | ❌ | ❌ | ✅ |
 | CLI tool | ❌ | ❌ | ✅ |
-| Documentation generator | ❌ | ❌ | ✅ |
-| Reload support | ❌ | ❌ | ✅ |
 
-## Auto-generated .env.example
+---
 
-When you call `load()` for the first time, EnvCraft automatically generates a `.env.example` file with:
-- Field descriptions from your Pydantic schema
-- Type information for each variable
-- Default values for optional fields
+## Documentation
 
-**Generated `.env.example`:**
-```bash
-# PostgreSQL connection string
-# Type: str
-DATABASE_URL=
+- **[Quick Start Guide](docs/QUICKSTART.md)** - Get started in 5 minutes
+- **[Features](docs/FEATURES.md)** - Complete feature list
+- **[Integrations](docs/INTEGRATIONS.md)** - FastAPI, Django, Flask examples
+- **[Migration](docs/MIGRATION.md)** - Switch from other libraries
+- **[Changelog](CHANGELOG.md)** - Version history
 
-# External API key
-# Type: Secret[str]
-API_KEY=
+---
 
-# Type: bool
-DEBUG=False
-
-# Type: int
-MAX_WORKERS=4
-```
-
-To disable auto-generation:
-```python
-config = AppConfig.load(auto_generate_example=False)
-```
-
-Or manually generate anytime:
-```python
-AppConfig.generate_example()
-```
-
-## Environment-specific configs
-
-```python
-# Loads .env, then .env.production, then .env.local
-config = AppConfig.load(env='production')
-```
-
-## Debug Variable Sources
-
-See which file supplied each variable - extremely useful for debugging deployments:
-
-```python
-config = AppConfig.load(show_sources=True)
-```
-
-**Output:**
-```
-📋 Environment Variable Sources:
-
-  DATABASE_URL = postgresql://user:pass@localhost/db
-    └─ loaded from .env.production
-  API_KEY = ***
-    └─ loaded from .env
-  DEBUG = True
-    └─ loaded from .env.local
-  MAX_WORKERS = 4
-    └─ loaded from default value
-```
-
-**Precedence order:** `.env` → `.env.{env}` → `.env.local` (later files override earlier ones)
-
-## Config Validation
-
-Check configuration status without loading - perfect for CI/CD and onboarding:
-
-```python
-AppConfig.diagnose()
-```
-
-**Output:**
-```
-🔍 Configuration Diagnosis:
-
-  ✓ DATABASE_URL present
-  ✓ API_KEY present
-  ✓ DEBUG using default (False)
-  ✗ REDIS_URL missing (required)
-  ⚠ CACHE_TTL not set (optional)
-
-❌ Some required variables are missing
-```
-
-Returns `True` if all required variables are present, `False` otherwise. Great for:
-- CI/CD pipeline checks
-- Developer onboarding
-- Deployment validation
-- Quick environment audits
-
-## CLI Tool
-
-EnvCraft includes a command-line tool for quick validation and documentation:
+## CLI Tools
 
 ```bash
-# Check if all required variables are present
-envcraft check
-
-# Generate .env.example file
-envcraft generate
-
-# Generate configuration documentation
-envcraft docs
-
-# Explain a specific variable
-envcraft explain DATABASE_URL
+envcraft check      # Validate configuration
+envcraft generate   # Create .env.example
+envcraft docs       # Generate CONFIG.md
+envcraft explain    # Explain a variable
 ```
 
-**Example output:**
-```bash
-$ envcraft explain DATABASE_URL
+---
 
-📝 DATABASE_URL
-
-  Description: PostgreSQL connection string
-  Type: str
-  Required: Yes
-```
-
-The CLI automatically finds your config class in common locations:
-- `config.AppConfig`
-- `app.config.AppConfig`
-- `settings.Settings`
-- `config.Config`
-
-Perfect for:
-- CI/CD validation: `envcraft check || exit 1`
-- Pre-commit hooks
-- Developer onboarding
-- Quick reference
-
-## Nested Config Support
-
-Organize complex configurations with nested models:
-
-```python
-from pydantic import BaseModel
-
-class DBConfig(BaseModel):
-    url: str
-    pool_size: int = 10
-
-class RedisConfig(BaseModel):
-    host: str = "localhost"
-    port: int = 6379
-
-class AppConfig(EnvCraft):
-    db: DBConfig
-    redis: RedisConfig
-    debug: bool = False
-```
-
-**Environment variables use double underscore (`__`) for nesting:**
-```bash
-DB__URL=postgresql://localhost/mydb
-DB__POOL_SIZE=20
-REDIS__HOST=redis.example.com
-REDIS__PORT=6380
-DEBUG=true
-```
-
-**Generated `.env.example`:**
-```bash
-# DB (nested)
-
-# Type: str
-DB__URL=
-
-# Type: int
-DB__POOL_SIZE=10
-
-# REDIS (nested)
-
-# Type: str
-REDIS__HOST=localhost
-
-# Type: int
-REDIS__PORT=6379
-```
-
-## Strict Mode
-
-Prevent configuration drift by failing on unknown environment variables:
-
-```python
-# Fails if any unexpected variables are present
-config = AppConfig.load(strict=True)
-```
-
-This catches typos and ensures your environment matches your schema exactly. Very useful in production deployments.
-
-## Documentation Generator
-
-Auto-generate Markdown documentation for your configuration:
-
-```python
-AppConfig.generate_docs()  # Creates CONFIG.md
-```
-
-**Generated output:**
-```markdown
-# Configuration Documentation
-
-## DATABASE_URL
-
-PostgreSQL connection string
-
-- **Type:** `str`
-- **Required:** Yes
-
-**Example:**
-\`\`\`bash
-DATABASE_URL=<value>
-\`\`\`
-
-## DEBUG
-
-- **Type:** `bool`
-- **Required:** No
-- **Default:** `False`
-```
-
-Perfect for onboarding documentation and team wikis.
-
-## Secret Backend Plugins
-
-Load secrets from external secret managers instead of environment variables:
-
-```python
-from envcraft import EnvCraft, Secret
-
-class AppConfig(EnvCraft):
-    # Load from AWS Secrets Manager
-    api_key: Secret[str] = Secret.from_aws("prod/api_key", region="us-east-1")
-    
-    # Load from Azure Key Vault
-    db_password: Secret[str] = Secret.from_azure("db-password", vault_url="https://myvault.vault.azure.net/")
-    
-    # Load from HashiCorp Vault
-    jwt_secret: Secret[str] = Secret.from_vault("jwt-secret", url="https://vault.example.com")
-
-config = AppConfig.load()
-print(config.api_key.get())  # Fetches from AWS on first access
-```
-
-**Supported backends:**
-- AWS Secrets Manager (requires `boto3`)
-- Azure Key Vault (requires `azure-keyvault-secrets`)
-- HashiCorp Vault (requires `hvac`)
-- Environment variables (default)
-
-**Custom backends:**
-```python
-from envcraft import SecretBackend, register_backend
-
-class CustomBackend(SecretBackend):
-    def get_secret(self, key: str) -> str:
-        # Your custom logic
-        return fetch_from_somewhere(key)
-
-register_backend('custom', CustomBackend())
-config.secret = Secret.from_backend('my-key', backend='custom')
-```
-
-## Variable Interpolation
-
-Use `${VAR}` syntax to reference other variables in your .env files:
+## Installation Options
 
 ```bash
-# .env
-USER=myuser
-HOST=localhost
-DATABASE_URL=postgresql://${USER}@${HOST}/mydb
-API_BASE=https://${HOST}/api
+# Basic
+pip install envcraft
+
+# With secret backends
+pip install envcraft[aws]    # AWS Secrets Manager
+pip install envcraft[azure]  # Azure Key Vault
+pip install envcraft[vault]  # HashiCorp Vault
+pip install envcraft[all]    # All backends
 ```
 
-Variables are expanded automatically when the config is loaded. You can reference:
-- Other variables in the same file
-- Variables from earlier files in the load order
-- System environment variables
+---
 
-## Caching & Reload Support
+## Contributing
 
-EnvCraft uses a singleton pattern by default for efficient config access:
+Contributions welcome! Help us reach 1.0:
 
-```python
-# First call loads and caches
-config1 = AppConfig.load()
+- 🧪 Add tests (especially for AWS/Azure/Vault backends)
+- 🐛 Report issues
+- 📖 Improve documentation
+- ✨ Suggest features
 
-# Subsequent calls return cached instance
-config2 = AppConfig.load()
-assert config1 is config2
+[GitHub Repository](https://github.com/ArnabbLank/EnvCraft)
 
-# Reload configuration (e.g., after file changes)
-config = AppConfig.reload()
-
-# Register callbacks for reload events
-def on_config_reload(new_config):
-    print(f"Config reloaded! Debug mode: {new_config.debug}")
-
-AppConfig.on_reload(on_config_reload)
-```
-
-**Thread-safe:** All reload operations use locks to ensure safety in multi-threaded applications like FastAPI.
-
-To disable caching:
-```python
-config = AppConfig.load(cache=False)
-```
-
-## Smart Error Suggestions
-
-When you make a typo, EnvCraft suggests the correct variable name:
-
-```
-❌ Environment Configuration Error:
-
-  • databse_url: Field required
-    → Set DATABSE_URL in your .env file or environment
-    💡 Did you mean: DATABASE_URL?
-```
-
-Works for:
-- Missing required variables
-- Unknown variables in strict mode
-- Nested configuration fields
-
-## Framework Integrations
-
-EnvCraft works seamlessly with popular frameworks:
-
-- **[FastAPI](docs/INTEGRATIONS.md#fastapi)** - Dependency injection, lifespan events, hot reload
-- **[Django](docs/INTEGRATIONS.md#django)** - Settings integration, nested configs
-- **[Flask](docs/INTEGRATIONS.md#flask)** - App configuration
-- **[Celery](docs/INTEGRATIONS.md#celery)** - Task queue configuration
-- **[Docker/Kubernetes](docs/INTEGRATIONS.md#docker)** - Container deployments
-- **[AWS Lambda](docs/INTEGRATIONS.md#aws-lambda)** - Serverless functions
-
-See [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) for complete examples.
-
-## Migration Guides
-
-Switching from another config library? We've got you covered:
-
-- **[From python-dotenv](docs/MIGRATION.md#migrating-from-python-dotenv)** - Simple upgrade path
-- **[From pydantic-settings](docs/MIGRATION.md#migrating-from-pydantic-settings)** - Drop-in replacement
-- **[From django-environ](docs/MIGRATION.md#migrating-from-django-environ)** - Django-specific guide
-- **[From decouple](docs/MIGRATION.md#migrating-from-decouple)** - Quick migration
-
-See [docs/MIGRATION.md](docs/MIGRATION.md) for detailed migration guides.
-
-## Getting Started
-
-- **New to EnvCraft?** See [docs/QUICKSTART.md](docs/QUICKSTART.md) for persona-based guides
-- **Migrating?** Check [docs/MIGRATION.md](docs/MIGRATION.md) for your current library
-- **Using a framework?** See [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) for examples
-- **Want all features?** Read [docs/FEATURES.md](docs/FEATURES.md) for complete list
+---
 
 ## License
 
-MIT
+MIT © 2026 Arnab Sen

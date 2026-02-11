@@ -109,13 +109,19 @@ envcraft explain    # Explain a variable
 
 ---
 
-## Installation Options
+## Installation
 
+**Requirements:**
+- Python 3.8+
+- Pydantic v2.0+
+
+**Basic:**
 ```bash
-# Basic
 pip install envcraft
+```
 
-# With secret backends
+**With secret backends:**
+```bash
 pip install envcraft[aws]    # AWS Secrets Manager
 pip install envcraft[azure]  # Azure Key Vault
 pip install envcraft[vault]  # HashiCorp Vault

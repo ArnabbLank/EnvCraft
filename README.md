@@ -76,11 +76,15 @@ That's it! EnvCraft handles type validation, multi-file loading, and auto-genera
 | Feature | python-dotenv | pydantic-settings | **EnvCraft** |
 |---------|---------------|-------------------|---------------|
 | Type validation | ❌ | ✅ | ✅ |
+| Multi-file support | ⚠️ Manual merging | ⚠️ Custom logic needed | ✅ Built-in |
 | Auto .env.example | ❌ | ❌ | ✅ |
-| Smart error suggestions | ❌ | ❌ | ✅ |
+| Smart error suggestions | ❌ | ⚠️ Basic errors | ✅ Fuzzy matching |
 | Variable interpolation | ❌ | ❌ | ✅ |
-| Secret backends | ❌ | ❌ | ✅ |
+| Secret backends | ❌ | ⚠️ Via custom sources | ✅ AWS/Azure/Vault |
 | CLI tool | ❌ | ❌ | ✅ |
+| Maturity | ✅ Very stable | ✅ Very stable | ⚠️ Early (v0.1.0) |
+
+**Note:** python-dotenv and pydantic-settings are mature, battle-tested libraries. EnvCraft adds convenience features but is still in early development.
 
 ---
 

@@ -4,6 +4,37 @@ Enhanced environment configuration for Python with better error messages and mul
 
 > **The last config library you'll need** - From startup to enterprise in one package.
 
+## Project Status
+
+⚠️ **Early Development (v0.1.0)** - Use with caution in production
+
+| Component | Status | Test Coverage |
+|-----------|--------|---------------|
+| Core config loading | **Beta** | ✅ 3 tests |
+| Type validation | **Stable** | ✅ Powered by Pydantic |
+| Multi-file support | **Beta** | ✅ Tested |
+| Variable interpolation | **Beta** | ✅ 2 tests |
+| Caching & reload | **Beta** | ✅ 5 tests |
+| Secret wrapper | **Beta** | ✅ 10 tests |
+| Nested configs | **Beta** | ✅ 3 tests |
+| Strict mode | **Beta** | ✅ 2 tests |
+| CLI tools | **Alpha** | ⚠️ Manual testing only |
+| Secret backends (AWS/Azure/Vault) | **Experimental** | ⚠️ Code exists, not tested with real services |
+| Framework integrations | **Documentation only** | ⚠️ Examples provided, not tested |
+
+**Total: 26 automated tests**
+
+**Production Readiness:**
+- ✅ Safe for basic .env loading with type validation
+- ✅ Good for development and staging environments
+- ⚠️ Test thoroughly before using secret backends in production
+- ⚠️ CLI tools work but need more edge case testing
+- ❌ Not recommended for mission-critical production use yet
+
+**Contributions welcome!** Help us reach 1.0 by adding tests, reporting issues, or improving documentation.
+
+---
+
 ## Features
 
 - 🔒 **Secret wrapper** - Prevents accidental logging of sensitive values

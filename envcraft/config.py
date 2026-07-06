@@ -10,7 +10,7 @@ import re
 T = TypeVar('T')
 
 # Global registries (outside the class to avoid Pydantic interference)
-_instances: Dict[type, 'EnvConfig'] = {}
+_instances: Dict[type, 'EnvCraft'] = {}
 _locks: Dict[type, RLock] = {}
 _reload_callbacks: Dict[type, List[Callable]] = {}
 
@@ -253,7 +253,7 @@ class EnvCraft(BaseSettings):
             return new_instance
     
     @classmethod
-    def on_reload(cls, callback: Callable[['EnvConfig'], None]):
+    def on_reload(cls, callback: Callable[['EnvCraft'], None]):
         """Register a callback to be called when config is reloaded"""
         cls._get_callbacks().append(callback)
     
@@ -353,7 +353,7 @@ class EnvCraft(BaseSettings):
                     pass
                 
                 env_name = f"{prefix}{field_name.upper()}"
-                type_str = str(field_type).replace('typing.', '').replace('envconfig.config.', '')
+                type_str = str(field_type).replace('typing.', '').replace('envcraft.config.', '')
                 
                 lines.append(f"{'#' * level} {env_name}\n")
                 
@@ -458,7 +458,7 @@ class EnvCraft(BaseSettings):
                     lines.append(f"# {description}")
                 
                 # Add comment with type
-                type_str = str(field_type).replace('typing.', '').replace('envconfig.config.', '')
+                type_str = str(field_type).replace('typing.', '').replace('envcraft.config.', '')
                 lines.append(f"# Type: {type_str}")
                 
                 # Add default if exists
@@ -476,7 +476,7 @@ class EnvCraft(BaseSettings):
 
 # Example usage
 if __name__ == "__main__":
-    class AppConfig(EnvConfig):
+    class AppConfig(EnvCraft):
         database_url: str = Field(..., description="PostgreSQL connection string")
         api_key: str = Field(..., description="External API key")
         debug: bool = False
